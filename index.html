@@ -10,8 +10,7 @@
             --cor-fundo: #0b1a33; --cor-principal: #1e3a6b; --cor-destaque: #3b5998;
             --cor-texto: #dfe3ee; --cor-rosa-fds: #fce4e4; --cor-verde: #90ee90;
             --cor-amarelo: #ffff00; --cor-laranja: #ffa500; --cor-vermelho: #ff6347;
-            --cor-roxo: #9370db; /* NOVO: Cor para "Afastado" */
-            --cor-texto-erro: #ffcdd2;
+            --cor-roxo: #9370db; --cor-texto-erro: #ffcdd2;
         }
         body { font-family: system-ui, sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 0; }
         .hidden { display: none !important; }
@@ -63,6 +62,12 @@
         .employee-controls { 
             display: flex; flex-direction: column; align-items: flex-start; gap: 10px; flex: 1; min-width: 280px;
         }
+        /* NOVO: Estilo para controles desabilitados */
+        .employee-controls select:disabled, .employee-controls input:disabled, .employee-controls button:disabled {
+            background-color: #555 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
         .employee-controls select, .employee-controls input, .employee-controls button { 
             padding: 10px; border-radius: 5px; border: 1px solid var(--cor-texto); font-size: 1em; width: 100%; max-width: 400px; box-sizing: border-box; 
         }
@@ -78,6 +83,13 @@
         
         .saldo-positivo { color: var(--cor-verde) !important; }
         .saldo-negativo { color: var(--cor-vermelho) !important; }
+        
+        /* NOVO: Estilo para o aviso de "Modo Visualização" */
+        #view-only-notice {
+            text-align: center; font-weight: bold; color: var(--cor-amarelo);
+            background-color: var(--cor-principal); padding: 10px; border-radius: 8px;
+            margin-bottom: 20px;
+        }
 
         #calendar-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
         .month-container { flex: 1 1 300px; min-width: 300px; max-width: 400px; }
@@ -87,7 +99,7 @@
         .header-cell { background-color: var(--cor-principal); font-weight: bold; font-size: 0.8em; }
         .day-cell { background-color: white; color: black; font-size: 0.9em; height: 35px; position: relative; }
         .day-cell.weekend { background-color: var(--cor-rosa-fds); }
-        .day-cell.valid-day { cursor: pointer; }
+        .day-cell.valid-day.editable { cursor: pointer; } /* MODIFICADO: Cursor de ponteiro apenas para dias editáveis */
         .day-cell.empty { background-color: transparent; }
         .color-verde { background-color: var(--cor-verde) !important; }
         .color-amarelo { background-color: var(--cor-amarelo) !important; }
@@ -130,7 +142,7 @@
 </head>
 <body>
 
-    <!-- ===== TELA DE LOGIN ===== -->
+    <!-- TELA DE LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <h2>Acessar Planejamento</h2>
@@ -142,7 +154,7 @@
         </div>
     </div>
     
-    <!-- ===== APLICAÇÃO PRINCIPAL ===== -->
+    <!-- APLICAÇÃO PRINCIPAL -->
     <div id="app-container" class="hidden">
         <div class="container">
             <header>
@@ -156,15 +168,17 @@
                     <div class="legend-item legend-roxo">Afastado</div>
                 </div>
             </header>
+            
+            <!-- NOVO: Container para o aviso de "Modo Visualização" -->
+            <div id="view-only-notice" class="hidden">Você está no modo de visualização. As edições estão desativadas.</div>
 
             <div class="controls-container">
                 <div class="employee-controls">
                     <label for="employee-select">Funcionário:</label>
                     <select id="employee-select"></select>
-                    <!-- Campos de edição agora são controlados por JS -->
-                    <input type="text" id="new-employee-name" placeholder="Nome do novo funcionário" class="hidden">
-                    <button id="add-employee-btn" class="hidden">Adicionar</button>
-                    <button id="remove-employee-btn" class="hidden">Remover Selecionado</button>
+                    <input type="text" id="new-employee-name" placeholder="Nome do novo funcionário">
+                    <button id="add-employee-btn">Adicionar</button>
+                    <button id="remove-employee-btn">Remover Selecionado</button>
                 </div>
                 
                 <div class="summary-container">
@@ -181,7 +195,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL PARA EDITAR O DIA ===== -->
+    <!-- MODAL PARA EDITAR O DIA -->
     <div id="day-editor-modal" class="hidden">
         <div class="modal-content">
             <h3 id="modal-title">Editar Dia</h3>
@@ -216,7 +230,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
-    <!-- SCRIPT DA APLICAÇÃO COM LÓGICA DE PERMISSÕES -->
     <script>
         const firebaseConfig = {
           apiKey: "AIzaSyBVAUP4agCEN6pVXWXOsQDG7Bzfile2OWU",
@@ -228,36 +241,21 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
         const docRef = db.collection("planejamentos").doc("dados2025");
 
         document.addEventListener('DOMContentLoaded', () => {
+            const auth = firebase.auth();
             const loginScreen = document.getElementById('login-screen');
             const appContainer = document.getElementById('app-container');
             const loginForm = document.getElementById('login-form');
             const loginError = document.getElementById('login-error');
             const logoutBtn = document.getElementById('logout-btn');
 
-            // NOVO: Variável global para armazenar a permissão do usuário logado
-            let currentUserRole = 'viewer'; // Permissão padrão é a mais restritiva
-
-            async function showApp(user) {
-                // NOVO: Buscar a permissão do usuário no Firestore
-                try {
-                    const roleDoc = await db.collection('user_roles').doc(user.uid).get();
-                    if (roleDoc.exists && roleDoc.data().role === 'editor') {
-                        currentUserRole = 'editor';
-                    } else {
-                        currentUserRole = 'viewer';
-                    }
-                } catch (error) {
-                    console.error("Erro ao buscar permissão do usuário:", error);
-                    currentUserRole = 'viewer'; // Mantém a permissão restritiva em caso de erro
-                }
-
+            // MODIFICADO: A função showApp agora aceita a função do usuário (role)
+            function showApp(userRole) {
                 loginScreen.classList.add('hidden');
                 appContainer.classList.remove('hidden');
-                initializeAppLogic(); 
+                initializeAppLogic(userRole); // Passa a função para a lógica principal
             }
 
             function showLogin() {
@@ -282,18 +280,33 @@
 
             logoutBtn.addEventListener('click', () => { auth.signOut().then(() => { location.reload(); }); });
 
-            // ATUALIZADO: a função onAuthStateChanged agora é assíncrona para buscar a permissão
+            // MODIFICADO: A verificação de autenticação agora também busca a função do usuário
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    showApp(user); // Passa o objeto 'user' para obter o UID
+                    // Usuário logado. Vamos verificar sua permissão na coleção 'user_roles'
+                    const userRoleRef = db.collection("user_roles").doc(user.uid);
+                    userRoleRef.get().then((doc) => {
+                        let role = 'viewer'; // Permissão padrão é 'visualizador'
+                        if (doc.exists && doc.data().role === 'editor') {
+                            role = 'editor'; // Se o documento existir e a role for 'editor', ele pode editar
+                        }
+                        showApp(role); // Inicia o app com a permissão definida
+                    }).catch((error) => {
+                        console.error("Erro ao buscar função do usuário:", error);
+                        showApp('viewer'); // Em caso de erro, assume a permissão mais restritiva
+                    });
                 } else {
+                    // Usuário deslogado
                     showLogin();
                 }
             });
             
             let stopListeningToFirebase = null; 
 
-            function initializeAppLogic() {
+            // MODIFICADO: A lógica do app agora recebe a função do usuário e sabe se ele é um editor
+            function initializeAppLogic(userRole) {
+                const isEditor = userRole === 'editor'; // Variável booleana para fácil verificação
+
                 if (stopListeningToFirebase) { stopListeningToFirebase(); }
 
                 const YEAR = 2025;
@@ -317,11 +330,26 @@
 
                 let state = { funcionarios: [], funcionarioSelecionadoId: null };
                 let localStateLoaded = false;
+                
+                // NOVO: Função para configurar a UI baseada na permissão do usuário
+                function setupUIForRole() {
+                    // Desabilita/habilita os controles de funcionário
+                    newEmployeeInput.disabled = !isEditor;
+                    addEmployeeBtn.disabled = !isEditor;
+                    removeEmployeeBtn.disabled = !isEditor;
+
+                    // Mostra ou esconde o aviso de "modo visualização"
+                    const viewOnlyNotice = document.getElementById('view-only-notice');
+                    if (!isEditor) {
+                        viewOnlyNotice.classList.remove('hidden');
+                    } else {
+                        viewOnlyNotice.classList.add('hidden');
+                    }
+                }
 
                 function saveState() {
-                    // NOVO: Apenas editores podem salvar
-                    if (currentUserRole !== 'editor') return;
-                    if (!localStateLoaded) return;
+                    // A gravação só deve ocorrer se o usuário for um editor
+                    if (!localStateLoaded || !isEditor) return;
                     docRef.set(state).catch(error => console.error("Erro ao salvar no Firebase: ", error));
                 }
 
@@ -330,22 +358,24 @@
                         if (doc.exists) {
                             state = doc.data();
                         } else {
-                            // A criação inicial ainda é permitida caso o banco de dados esteja vazio
-                            const initialId = `func-${Date.now()}`;
-                            state = {
-                                funcionarios: [{
-                                    id: initialId, nome: "Meu Planejamento",
-                                    calendario: {
-                                        '2025-01-01': { cor: 'verde' }, '2025-03-03': { cor: 'verde' }, '2025-03-04': { cor: 'verde' },
-                                        '2025-04-18': { cor: 'verde' }, '2025-04-21': { cor: 'verde' }, '2025-05-01': { cor: 'verde' },
-                                        '2025-06-19': { cor: 'verde' }, '2025-09-07': { cor: 'verde' }, '2025-10-12': { cor: 'verde' },
-                                        '2025-11-02': { cor: 'verde' }, '2025-11-15': { cor: 'verde' }, '2025-11-20': { cor: 'verde' },
-                                        '2025-12-25': { cor: 'verde' },
-                                    }
-                                }],
-                                funcionarioSelecionadoId: initialId,
-                            };
-                            saveState();
+                            // A criação de dados iniciais só deve ocorrer se for um editor
+                            if (isEditor) {
+                                const initialId = `func-${Date.now()}`;
+                                state = {
+                                    funcionarios: [{
+                                        id: initialId, nome: "Meu Planejamento",
+                                        calendario: {
+                                            '2025-01-01': { cor: 'verde' }, '2025-03-03': { cor: 'verde' }, '2025-03-04': { cor: 'verde' },
+                                            '2025-04-18': { cor: 'verde' }, '2025-04-21': { cor: 'verde' }, '2025-05-01': { cor: 'verde' },
+                                            '2025-06-19': { cor: 'verde' }, '2025-09-07': { cor: 'verde' }, '2025-10-12': { cor: 'verde' },
+                                            '2025-11-02': { cor: 'verde' }, '2025-11-15': { cor: 'verde' }, '2025-11-20': { cor: 'verde' },
+                                            '2025-12-25': { cor: 'verde' },
+                                        }
+                                    }],
+                                    funcionarioSelecionadoId: initialId,
+                                };
+                                saveState();
+                            }
                         }
                         localStateLoaded = true;
                         renderApp();
@@ -371,6 +401,7 @@
                             totalAtrasos += data.atrasos;
                         }
                     }
+                    
                     const saldoHoras = totalExtras - totalAtrasos;
                     const saldoEl = document.getElementById('summary-saldo');
                     document.getElementById('summary-uteis').textContent = folgasUteis;
@@ -379,37 +410,31 @@
                     document.getElementById('summary-extras').textContent = totalExtras.toFixed(1);
                     document.getElementById('summary-atrasos').textContent = totalAtrasos.toFixed(1);
                     saldoEl.textContent = saldoHoras.toFixed(1);
-                    saldoEl.className = 'summary-item'; // Limpa classes de cor
+                    saldoEl.className = '';
                     if (saldoHoras > 0) saldoEl.classList.add('saldo-positivo');
                     if (saldoHoras < 0) saldoEl.classList.add('saldo-negativo');
                 }
 
                 function renderApp() {
+                    setupUIForRole(); // Configura a UI com base na permissão
                     renderEmployeeControls();
                     renderCalendar();
                     calculateAndDisplaySummaries();
                 }
 
-                // ATUALIZADO: A renderização dos controles agora depende da permissão do usuário
                 function renderEmployeeControls() {
-                    const isEditor = currentUserRole === 'editor';
-                    
-                    // Mostra/esconde os controles de edição com base na permissão
-                    newEmployeeInput.classList.toggle('hidden', !isEditor);
-                    addEmployeeBtn.classList.toggle('hidden', !isEditor);
-                    removeEmployeeBtn.classList.toggle('hidden', !isEditor);
-
                     const currentSelection = employeeSelect.value;
                     employeeSelect.innerHTML = '';
                     if (state.funcionarios.length === 0) {
                         const option = document.createElement('option');
-                        option.textContent = isEditor ? "Adicione um funcionário" : "Nenhum funcionário";
+                        option.textContent = isEditor ? "Adicione um funcionário" : "Nenhum planejamento disponível";
                         employeeSelect.appendChild(option);
                         employeeSelect.disabled = true; 
-                        removeEmployeeBtn.disabled = true;
+                        removeEmployeeBtn.disabled = true; // Sempre desabilitar se não houver funcionário
                     } else {
-                        employeeSelect.disabled = false; 
-                        removeEmployeeBtn.disabled = !isEditor; // Desabilita se não for editor
+                        employeeSelect.disabled = false;
+                        // O botão de remover só é habilitado se for editor
+                        removeEmployeeBtn.disabled = !isEditor;
                         state.funcionarios.forEach(func => {
                             const option = document.createElement('option');
                             option.value = func.id;
@@ -423,7 +448,6 @@
 
                 function renderCalendar() {
                     calendarContainer.innerHTML = '';
-                    const isEditor = currentUserRole === 'editor';
                     const funcionarioAtual = state.funcionarios.find(f => f.id === state.funcionarioSelecionadoId);
                     MONTHS.forEach((monthName, monthIndex) => {
                         const monthContainer = document.createElement('div');
@@ -447,9 +471,9 @@
                         }
                         for (let day = 1; day <= daysInMonth; day++) {
                             const dayCell = document.createElement('div');
-                            dayCell.classList.add('day-cell');
-                            // Apenas dias válidos devem ter a classe 'valid-day' e o cursor de ponteiro para editores
-                            if(isEditor) dayCell.classList.add('valid-day');
+                            dayCell.classList.add('day-cell', 'valid-day');
+                            // NOVO: Adiciona a classe 'editable' apenas se o usuário for editor
+                            if (isEditor) { dayCell.classList.add('editable'); }
                             
                             dayCell.textContent = day;
                             const dateString = `${YEAR}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -470,16 +494,18 @@
                     });
                 }
                 
+                // MODIFICADO: O clique no dia só funciona se o usuário for um editor
                 function handleDayClick(event) {
-                    // NOVO: Apenas editores podem abrir o modal de edição
-                    if (currentUserRole !== 'editor') return;
-
+                    if (!isEditor) return; // Se não for editor, não faz nada
+                    
                     const cell = event.target.closest('.valid-day');
                     if (!cell || !state.funcionarioSelecionadoId) return;
+
                     currentlyEditingDate = cell.dataset.date;
                     const funcionario = state.funcionarios.find(f => f.id === state.funcionarioSelecionadoId);
                     const entry = (funcionario?.calendario?.[currentlyEditingDate]) || {};
                     const data = typeof entry === 'string' ? { cor: entry } : entry;
+
                     modalTitle.textContent = `Editar Dia - ${new Date(currentlyEditingDate + 'T00:00:00').toLocaleDateString('pt-BR')}`;
                     modalColorSelect.value = data.cor || 'default';
                     modalExtraHours.value = data.extras || '';
@@ -488,28 +514,28 @@
                 }
 
                 function handleSaveDay() {
-                    // NOVO: Verificação de segurança adicional
-                    if (currentUserRole !== 'editor' || !currentlyEditingDate) return;
+                    if (!currentlyEditingDate || !isEditor) return; // Verificação dupla de permissão
                     const funcionario = state.funcionarios.find(f => f.id === state.funcionarioSelecionadoId);
                     if (!funcionario) return;
                     if (!funcionario.calendario) { funcionario.calendario = {}; }
+
                     const newColor = modalColorSelect.value;
                     const newExtras = parseFloat(modalExtraHours.value) || 0;
                     const newAtrasos = parseFloat(modalLateHours.value) || 0;
-                    const dataIsEmpty = newColor === 'default' && newExtras === 0 && newAtrasos === 0;
 
-                    if (dataIsEmpty) {
+                    if (newColor === 'default' && newExtras === 0 && newAtrasos === 0) {
                         delete funcionario.calendario[currentlyEditingDate];
                     } else {
                         funcionario.calendario[currentlyEditingDate] = { cor: newColor, extras: newExtras, atrasos: newAtrasos };
                     }
+                    
                     saveState();
                     modal.classList.add('hidden');
                     currentlyEditingDate = null;
                 }
                 
                 function handleAddEmployee() {
-                    if (currentUserRole !== 'editor') return;
+                    if (!isEditor) return; // Verificação de permissão
                     const name = newEmployeeInput.value.trim();
                     if (name) {
                         const newId = `func-${Date.now()}`;
@@ -521,7 +547,7 @@
                 }
 
                 function handleRemoveEmployee() {
-                    if (currentUserRole !== 'editor' || !state.funcionarioSelecionadoId || state.funcionarios.length === 0) return;
+                    if (!isEditor || !state.funcionarioSelecionadoId || state.funcionarios.length === 0) return;
                     const selectedEmployee = state.funcionarios.find(f => f.id === state.funcionarioSelecionadoId);
                     if(confirm(`Tem certeza que deseja remover "${selectedEmployee.nome}"? Esta ação não pode ser desfeita.`)) {
                         state.funcionarios = state.funcionarios.filter(f => f.id !== state.funcionarioSelecionadoId);
@@ -532,7 +558,6 @@
 
                 function handleSelectEmployee() {
                     state.funcionarioSelecionadoId = employeeSelect.value;
-                    // Não é preciso salvar o estado aqui, pois a seleção é local
                     renderCalendar();
                     calculateAndDisplaySummaries();
                 }
