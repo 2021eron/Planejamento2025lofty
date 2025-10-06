@@ -11,7 +11,7 @@
             --cor-principal: #1e3a6b; 
             --cor-destaque: #3b5998;
             --cor-texto: #dfe3ee; 
-            --cor-rosa-fds: #fce4e4; 
+            --cor-rosa-fds: #fce4e4;
             --cor-texto-erro: #ffcdd2;
             
             /* Cores Vibrantes ATUALIZADAS */
@@ -113,7 +113,7 @@
         .day-cell.valid-day { cursor: pointer; }
         .day-cell.empty { background-color: transparent; cursor: default; }
 
-        /* Cores de cÃ©lula ATUALIZADAS */
+        /* Cores de célula ATUALIZADAS */
         .day-cell.color-verde { background-color: var(--cor-verde); color: var(--cor-fundo); font-weight: bold; }
         .day-cell.color-laranja { background-color: var(--cor-laranja); color: var(--cor-fundo); font-weight: bold; }
         .day-cell.color-amarelo { background-color: var(--cor-amarelo); color: var(--cor-fundo); font-weight: bold; }
@@ -200,7 +200,7 @@
         </div>
     </div>
     
-    <!-- APLICAÃ‡ÃƒO PRINCIPAL -->
+    <!-- APLICAÇÃO PRINCIPAL -->
     <div id="app-container" class="hidden">
         <div class="container">
             <header>
@@ -226,25 +226,25 @@
                 </div>
             </header>
             
-            <div id="view-only-notice" class="hidden">VocÃª estÃ¡ no modo de visualizaÃ§Ã£o. As ediÃ§Ãµes estÃ£o desativadas.</div>
+            <div id="view-only-notice" class="hidden">Você está no modo de visualização. As edições estão desativadas.</div>
 
             <div class="controls-container">
                 <div class="employee-controls">
-                    <label for="employee-select">FuncionÃ¡rio: <span id="employee-status" style="font-weight:normal; font-style:italic;"></span></label>
+                    <label for="employee-select">Funcionário: <span id="employee-status" style="font-weight:normal; font-style:italic;"></span></label>
                     <select id="employee-select"></select>
-                    <input type="text" id="new-employee-name" placeholder="Nome do novo funcionÃ¡rio">
-                    <input type="email" id="new-employee-email" placeholder="E-mail de login do funcionÃ¡rio (opcional)">
+                    <input type="text" id="new-employee-name" placeholder="Nome do novo funcionário">
+                    <input type="email" id="new-employee-email" placeholder="E-mail de login do funcionário (opcional)">
                     <button id="add-employee-btn">Adicionar</button>
                     <button id="remove-employee-btn">Remover Selecionado</button>
                     <button id="make-supervisor-btn" class="hidden" style="background-color: var(--cor-amarelo); color: var(--cor-fundo);">Tornar/Remover Supervisor</button>
                 </div>
                 <div class="summary-container">
-                    <div class="summary-item"> Folgas Ãšteis: <span id="summary-uteis">0</span> </div>
+                    <div class="summary-item"> Folgas Úteis: <span id="summary-uteis">0</span> </div>
                     <div class="summary-item"> Folgas Feriado e FDS: <span id="summary-feriado-fds">0</span> </div>
                     <div class="summary-item summary-total"> <strong>TOTAL FOLGAS:</strong> <strong><span id="summary-total">0</span></strong> </div>
-                    <!-- REVISADO: TÃ­tulos para o Banco de Horas -->
+                    <!-- REVISADO: Títulos para o Banco de Horas -->
                     <div class="summary-item"> Banco de Horas (Entrada): <span id="summary-extras">0</span> </div>
-                    <div class="summary-item"> Banco de Horas (SaÃ­da): <span id="summary-atrasos">0</span> </div>
+                    <div class="summary-item"> Banco de Horas (Saída): <span id="summary-atrasos">0</span> </div>
                     <div class="summary-item summary-total"> <strong>SALDO DE HORAS:</strong> <strong><span id="summary-saldo">0</span></strong> </div>
                 </div>
             </div>
@@ -275,8 +275,8 @@
                         <input type="number" id="modal-extra-hours" list="hours-datalist" min="0" step="0.25" placeholder="Ex: 2.5">
                     </div>
                     <div class="input-item">
-                        <label for="modal-extra-obs">ObservaÃ§Ã£o</label>
-                        <input type="text" id="modal-extra-obs" placeholder="Pequena anotaÃ§Ã£o">
+                        <label for="modal-extra-obs">Observação</label>
+                        <input type="text" id="modal-extra-obs" placeholder="Pequena anotação">
                     </div>
                 </div>
             </div>
@@ -287,15 +287,15 @@
                         <input type="number" id="modal-late-hours" list="hours-datalist" min="0" step="0.25" placeholder="Ex: 0.5">
                     </div>
                     <div class="input-item">
-                        <label for="modal-late-obs">ObservaÃ§Ã£o</label>
-                        <input type="text" id="modal-late-obs" placeholder="Pequena anotaÃ§Ã£o">
+                        <label for="modal-late-obs">Observação</label>
+                        <input type="text" id="modal-late-obs" placeholder="Pequena anotação">
                     </div>
                 </div>
             </div>
             
             <div id="apply-to-all-container" class="modal-apply-all-group hidden">
                  <input type="checkbox" id="apply-to-all-checkbox">
-                 <label for="apply-to-all-checkbox">Aplicar esta alteraÃ§Ã£o a todos os funcionÃ¡rios.</label>
+                 <label for="apply-to-all-checkbox">Aplicar esta alteração a todos os funcionários.</label>
             </div>
 
             <div class="modal-buttons">
@@ -311,7 +311,7 @@
             <h3>Alterar Senha</h3>
             <div class="modal-input-group">
                 <label for="new-password">Nova Senha</label>
-                <input type="password" id="new-password" placeholder="MÃ­nimo de 6 caracteres" required>
+                <input type="password" id="new-password" placeholder="Mínimo de 6 caracteres" required>
             </div>
              <div class="modal-input-group">
                 <label for="confirm-password">Confirmar Nova Senha</label>
@@ -376,7 +376,7 @@
                 loginError.textContent = '';
                 auth.signInWithEmailAndPassword(email, password)
                     .catch((error) => {
-                        loginError.textContent = 'E-mail ou senha invÃ¡lidos.';
+                        loginError.textContent = 'E-mail ou senha inválidos.';
                         document.getElementById('password').value = '';
                     });
             });
@@ -393,7 +393,7 @@
                         }
                         showApp(role, user.email); 
                     }).catch((error) => {
-                        console.error("Erro ao buscar funÃ§Ã£o do usuÃ¡rio:", error);
+                        console.error("Erro ao buscar função do usuário:", error);
                         showApp('viewer', user.email);
                     });
                 } else {
@@ -410,7 +410,7 @@
                 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
                 const NATIONAL_HOLIDAYS = {
-                    2024: { '2024-01-01':{c:'v'},'2024-02-12':{c:'v'},'2024-02-13':{c:'v'},'2024-03-29':{c:'v'},'2024-04-21':{c:'v'},'2024-05-01':{c:'v'},'2024-05-30':{c:'v'},'2024-09-07':{c:'v'},'2024-10-12':{c:'v'},'2024-11-02':{c:'v'},'2024-11-15':{c:'v'},'2024-11-20':{c:'v'},'2024-12-25':{c:'v'} },
+                    2024: { '2024-01-01':{c:'v"},'2024-02-12':{c:'v'},'2024-02-13':{c:'v'},'2024-03-29':{c:'v'},'2024-04-21':{c:'v'},'2024-05-01':{c:'v'},'2024-05-30':{c:'v'},'2024-09-07':{c:'v'},'2024-10-12':{c:'v'},'2024-11-02':{c:'v'},'2024-11-15':{c:'v'},'2024-11-20':{c:'v'},'2024-12-25':{c:'v'} },
                     2025: { '2025-01-01':{c:'v'},'2025-03-03':{c:'v'},'2025-03-04':{c:'v'},'2025-04-18':{c:'v'},'2025-04-21':{c:'v'},'2025-05-01':{c:'v'},'2025-06-19':{c:'v'},'2025-09-07':{c:'v'},'2025-10-12':{c:'v'},'2025-11-02':{c:'v'},'2025-11-15':{c:'v'},'2025-11-20':{c:'v'},'2025-12-25':{c:'v'} },
                     2026: { '2026-01-01':{c:'v'},'2026-02-16':{c:'v'},'2026-02-17':{c:'v'},'2026-04-03':{c:'v'},'2026-04-21':{c:'v'},'2026-05-01':{c:'v'},'2026-06-04':{c:'v'},'2026-09-07':{c:'v'},'2026-10-12':{c:'v'},'2026-11-02':{c:'v'},'2026-11-15':{c:'v'},'2026-12-25':{c:'v'} },
                     2027: { '2027-01-01':{c:'v'},'2027-02-08':{c:'v'},'2027-02-09':{c:'v'},'2027-03-26':{c:'v'},'2027-04-21':{c:'v'},'2027-05-01':{c:'v'},'2027-05-27':{c:'v'},'2027-09-07':{c:'v'},'2027-10-12':{c:'v'},'2027-11-02':{c:'v'},'2027-11-15':{c:'v'},'2027-12-25':{c:'v'} },
@@ -422,8 +422,8 @@
                 const yearSelect = document.getElementById('year-select');
                 let selectedYear = parseInt(yearSelect.value);
 
-                const MONTHS = ['JANEIRO', 'FEVEREIRO', 'MARÃ‡O', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
-                const DAYS_OF_WEEK = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÃB', 'DOM'];
+                const MONTHS = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+                const DAYS_OF_WEEK = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM'];
                 
                 const calendarContainer = document.getElementById('calendar-container');
                 const employeeSelect = document.getElementById('employee-select');
@@ -524,7 +524,7 @@
                     });
                 }
                 
-                // FUNÃ‡ÃƒO DE RESUMO MODIFICADA
+                // FUNÇÃO DE RESUMO MODIFICADA
                 function calculateAndDisplaySummaries() {
                     const funcionarioAtual = state.funcionarios.find(f => f.id === state.funcionarioSelecionadoId);
                     let folgasUteis = 0, folgasFeriadoFDS = 0;
@@ -541,22 +541,22 @@
                             if (isWeekday && ['amarelo', 'laranja'].includes(data.cor)) { folgasUteis++; }
                             if (data.cor === 'verde' || (!isWeekday && ['amarelo', 'laranja', 'vermelho'].includes(data.cor))) { folgasFeriadoFDS++; }
                             
-                            // Mantenha a lÃ³gica de soma, apenas renomeie as variÃ¡veis
+                            // Mantenha a lógica de soma, apenas renomeie as variáveis
                             bancoHorasEntrada += parseFloat(data.extras) || 0;
                             bancoHorasSaida += parseFloat(data.atrasos) || 0;
                         }
                     }
                     
-                    const saldoHoras = bancoHorasEntrada - bancoHorasSaida; // O saldo Ã© a diferenÃ§a
+                    const saldoHoras = bancoHorasEntrada - bancoHorasSaida; // O saldo é a diferença
                     const saldoEl = document.getElementById('summary-saldo');
                     
                     document.getElementById('summary-uteis').textContent = folgasUteis;
                     document.getElementById('summary-feriado-fds').textContent = folgasFeriadoFDS;
                     document.getElementById('summary-total').textContent = folgasUteis + folgasFeriadoFDS;
                     
-                    // ATUALIZAÃ‡ÃƒO DOS TEXTOS E SPANS MODIFICADOS
+                    // ATUALIZAÇÃO DOS TEXTOS E SPANS MODIFICADOS
                     document.getElementById('summary-extras').textContent = bancoHorasEntrada.toFixed(2); // Exibe Banco de Horas (Entrada)
-                    document.getElementById('summary-atrasos').textContent = bancoHorasSaida.toFixed(2);   // Exibe Banco de Horas (SaÃ­da)
+                    document.getElementById('summary-atrasos').textContent = bancoHorasSaida.toFixed(2);   // Exibe Banco de Horas (Saída)
                     
                     saldoEl.textContent = saldoHoras.toFixed(2);
                     saldoEl.className = ''; 
@@ -586,7 +586,7 @@
                     
                     if (funcionariosParaExibir.length === 0) {
                         const option = document.createElement('option');
-                        option.textContent = canEdit ? "Adicione um funcionÃ¡rio" : "Nenhum planejamento atribuÃ­do";
+                        option.textContent = canEdit ? "Adicione um funcionário" : "Nenhum planejamento atribuído";
                         employeeSelect.appendChild(option);
                         employeeSelect.disabled = true; 
                         removeEmployeeBtn.disabled = true;
@@ -728,13 +728,13 @@
                         newEmployeeInput.value = '';
                         newEmployeeEmailInput.value = '';
                         saveState();
-                    } else { alert('Por favor, insira um nome para o funcionÃ¡rio.'); }
+                    } else { alert('Por favor, insira um nome para o funcionário.'); }
                 }
 
                 function handleRemoveEmployee() {
                     if (!canEdit || !state.funcionarioSelecionadoId || !state.funcionarios.length) return;
                     const emp = state.funcionarios.find(f => f.id === state.funcionarioSelecionadoId);
-                    if(confirm(`Tem certeza de que deseja remover "${emp.nome}"? Esta aÃ§Ã£o nÃ£o pode ser desfeita.`)) {
+                    if(confirm(`Tem certeza de que deseja remover "${emp.nome}"? Esta ação não pode ser desfeita.`)) {
                         state.funcionarios = state.funcionarios.filter(f => f.id !== state.funcionarioSelecionadoId);
                         state.funcionarioSelecionadoId = state.funcionarios.length > 0 ? state.funcionarios[0].id : null;
                         saveState();
@@ -759,17 +759,17 @@
                     if (!canEdit || !state.funcionarioSelecionadoId) return;
                     const funcionario = state.funcionarios.find(f => f.id === state.funcionarioSelecionadoId);
                     if (!funcionario || !funcionario.email) {
-                        alert("Este funcionÃ¡rio nÃ£o tem um e-mail de login associado e nÃ£o pode ser tornado supervisor.");
+                        alert("Este funcionário não tem um e-mail de login associado e não pode ser tornado supervisor.");
                         return;
                     }
-                    const instructions = `Para alterar a funÃ§Ã£o de "${funcionario.nome}" (${funcionario.email}):\n\n` +
-                                         `1. VÃ¡ para o seu console do Firebase e abra o Firestore Database.\n` +
-                                         `2. Encontre a coleÃ§Ã£o "user_roles".\n` +
-                                         `3. VocÃª precisa do UID (ID do UsuÃ¡rio) deste e-mail. VocÃª pode encontrÃ¡-lo na seÃ§Ã£o "Authentication" do Firebase.\n` +
+                    const instructions = `Para alterar a função de "${funcionario.nome}" (${funcionario.email}):\n\n` +
+                                         `1. Vá para o seu console do Firebase e abra o Firestore Database.\n` +
+                                         `2. Encontre a coleção "user_roles".\n` +
+                                         `3. Você precisa do UID (ID do Usuário) deste e-mail. Você pode encontrá-lo na seção "Authentication" do Firebase.\n` +
                                          `4. No Firestore, encontre o documento com o nome desse UID.\n` +
-                                         `5. Para tornÃ¡-lo SUPERVISOR, mude o campo "role" para "supervisor".\n` +
+                                         `5. Para torná-lo SUPERVISOR, mude o campo "role" para "supervisor".\n` +
                                          `6. Para REMOVER o acesso de supervisor, mude o campo "role" para "viewer".\n\n` +
-                                         `Esta alteraÃ§Ã£o manual Ã© necessÃ¡ria por seguranÃ§a.`;
+                                         `Esta alteração manual é necessária por segurança.`;
                     alert(instructions);
                 }
 
@@ -845,18 +845,18 @@
                     calendarContainer.addEventListener('mouseout', hideTooltip);
                 }
                 
-                // BotÃµes de funcionÃ¡rio
+                // Botões de funcionário
                 addEmployeeBtn.addEventListener('click', handleAddEmployee);
                 removeEmployeeBtn.addEventListener('click', handleRemoveEmployee);
                 employeeSelect.addEventListener('change', handleSelectEmployee);
                 yearSelect.addEventListener('change', handleYearChange);
                 makeSupervisorBtn.addEventListener('click', handleMakeSupervisor); // Listener restaurado
 
-                // BotÃµes do Modal do Dia
+                // Botões do Modal do Dia
                 modalSaveBtn.addEventListener('click', handleSaveDay);
                 modalCancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
                 
-                // BotÃµes do Modal de Senha (Listeners restaurados)
+                // Botões do Modal de Senha (Listeners restaurados)
                 changePasswordBtn.addEventListener('click', () => {
                     newPasswordInput.value = '';
                     confirmPasswordInput.value = '';
@@ -874,11 +874,11 @@
                     passwordChangeError.textContent = '';
 
                     if (newPassword.length < 6) {
-                        passwordChangeError.textContent = 'A senha deve ter no mÃ­nimo 6 caracteres.';
+                        passwordChangeError.textContent = 'A senha deve ter no mínimo 6 caracteres.';
                         return;
                     }
                     if (newPassword !== confirmPassword) {
-                        passwordChangeError.textContent = 'As senhas nÃ£o conferem.';
+                        passwordChangeError.textContent = 'As senhas não conferem.';
                         return;
                     }
 
