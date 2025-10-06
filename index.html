@@ -828,11 +828,11 @@
                         'laranja': 'Feriado Estadual',
                         'vermelho': 'Falta',
                         'roxo': 'Afastado',
-                        'turqueza': 'Folga' // Mapeamento para Folga com cor turquesa
+                        'turqueza': 'Folga'
                     };
                     let content = `<h4>${new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'})}</h4><p><span>Status:</span> <strong>${statusMap[dayData.cor]}</strong></p>`;
                     if (dayData.extras > 0) content += `<p><span>Horas Extras:</span> <strong>${dayData.extras}h</strong></p>${dayData.extrasObs ? `<div class="obs">${dayData.extrasObs}</div>` : ''}`;
-                    if (dayData.atrasos > 0) content += `<p><span>Atraso:</span> <strong>${dayData.atrasos}h</strong></p>${dayData.atrasosObs ? `<div class="obs">${dayData.atrasosObs}</div>` : ''}`;
+                    if (dayData.atrasos > 0) content += `<p><span>Atraso:</span> <strong>${dayData.atrasos}h</strong></p>${dayData.atrasosObs ? `<div class="obs">${dayData.atrasosObs}</div>` : ''}`; // <-- Observação de Atraso corrigida
 
                     tooltip.innerHTML = content;
                     tooltip.classList.remove('hidden');
