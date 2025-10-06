@@ -830,9 +830,20 @@
                         'roxo': 'Afastado',
                         'turqueza': 'Folga'
                     };
+                    // Adaptação para garantir que a observação seja exibida, mesmo que o texto seja vazio, se houver a chave
                     let content = `<h4>${new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'})}</h4><p><span>Status:</span> <strong>${statusMap[dayData.cor]}</strong></p>`;
-                    if (dayData.extras > 0) content += `<p><span>Horas Extras:</span> <strong>${dayData.extras}h</strong></p>${dayData.extrasObs ? `<div class="obs">${dayData.extrasObs}</div>` : ''}`;
-                    if (dayData.atrasos > 0) content += `<p><span>Atraso:</span> <strong>${dayData.atrasos}h</strong></p>${dayData.atrasosObs ? `<div class="obs">${dayData.atrasosObs}</div>` : ''}`; // <-- Observação de Atraso corrigida
+                    if (dayData.extras > 0) {
+                        content += `<p><span>Horas Extras:</span> <strong>${dayData.extras}h</strong></p>`;
+                        if (dayData.extrasObs) {
+                            content += `<div class="obs">${dayData.extrasObs}</div>`;
+                        }
+                    }
+                    if (dayData.atrasos > 0) {
+                        content += `<p><span>Atraso:</span> <strong>${dayData.atrasos}h</strong></p>`;
+                        if (dayData.atrasosObs) {
+                            content += `<div class="obs">${dayData.atrasosObs}</div>`;
+                        }
+                    }
 
                     tooltip.innerHTML = content;
                     tooltip.classList.remove('hidden');
